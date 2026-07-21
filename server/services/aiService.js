@@ -1,50 +1,56 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+require("dotenv").config();
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+const Groq = require("groq-sdk");
 
 const analyzeResume = async (resumeText, targetCompany) => {
-    try {
-        const prompt = `
+  try {
+    // Initialize INSIDE the function so env vars are loaded first
+    const groq = new Groq({
+      apiKey: process.env.GROQ_API_KEY,
+    });
+
+    const completion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "user",
+          content: `
 You are an expert technical interviewer and resume analyst.
-
 Analyze the following resume for a candidate applying to ${targetCompany}.
-
 Resume:
 ${resumeText}
-
 Provide a JSON response with exactly this structure (no extra text, just JSON):
 {
   "atsScore": <number between 0-100>,
-  "atsFeedback": "<one sentence explaining the ATS score>",
-  "strengths": ["<strength 1>", "<strength 2>", "<strength 3>"],
-  "weaknesses": ["<weakness 1>", "<weakness 2>", "<weakness 3>"],
+  "atsFeedback": "<one sentence>",
+  "strengths": ["<s1>", "<s2>", "<s3>"],
+  "weaknesses": ["<w1>", "<w2>", "<w3>"],
   "interviewQuestions": [
     {
-      "question": "<interview question>",
+      "question": "<question>",
       "category": "<Technical/Behavioral/HR>",
       "difficulty": "<Easy/Medium/Hard>"
     }
   ],
-  "overallFeedback": "<2-3 sentences of overall resume feedback>"
+  "overallFeedback": "<2-3 sentences>"
 }
+Generate 8-10 interview questions.
+          `,
+        },
+      ],
+      model: "llama3-8b-8192",
+      temperature: 0.7,
+    });
 
-Generate 8-10 interview questions relevant to the candidate's skills and the target company.
-`;
-
-        const result = await model.generateContent(prompt);
-        const responseText = result.response.text();
-
-        const cleanedResponse = responseText
-            .replace(/```json/g, "")
-            .replace(/```/g, "")
-            .trim();
-
-        const analysis = JSON.parse(cleanedResponse);
-        return analysis;
-    } catch (error) {
-        throw new Error(`AI analysis failed: ${error.message}`);
-    }
+    const responseText = completion.choices[0]?.message?.content || "";
+    const cleanedResponse = responseText
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+    const analysis = JSON.parse(cleanedResponse);
+    return analysis;
+  } catch (error) {
+    throw new Error(`AI analysis failed: ${error.message}`);
+  }
 };
 
 module.exports = { analyzeResume };
