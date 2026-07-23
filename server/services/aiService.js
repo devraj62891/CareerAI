@@ -1,5 +1,6 @@
 require("dotenv").config();
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 const Groq = require("groq-sdk");
 
 const analyzeResume = async (resumeText, targetCompany) => {
@@ -46,6 +47,7 @@ Generate 8-10 interview questions.
       .replace(/```json/g, "")
       .replace(/```/g, "")
       .trim();
+
     const analysis = JSON.parse(cleanedResponse);
     return analysis;
   } catch (error) {
