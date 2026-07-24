@@ -37,7 +37,7 @@ Generate 8-10 interview questions.
           `,
         },
       ],
-      model: "llama3-8b-8192",
+      model: "openai/gpt-oss-20b",
       temperature: 0.7,
     });
 

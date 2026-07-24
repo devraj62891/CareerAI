@@ -1,0 +1,167 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #1e293b;
+}
+
+.ghost {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.card h2 {
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+  color: #1e293b;
+}
+
+.card input[type='text'],
+.card input[type='file'] {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+}
+
+.card button {
+  padding: 0.6rem 1.2rem;
+  border: 0;
+  border-radius: 8px;
+  background: #6366f1;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.card button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ok {
+  margin: 1rem 0 0;
+  color: #15803d;
+  font-weight: 600;
+}
+
+.error {
+  background: #fef2f2;
+  color: #b91c1c;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin: 0;
+}
+
+/* ---- Results ---- */
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.score {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #6366f1;
+  line-height: 1;
+}
+
+.score span {
+  font-size: 1rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.score-feedback {
+  margin: 0;
+  color: #475569;
+}
+
+.results h3 {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 1rem;
+  color: #334155;
+}
+
+.results ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #475569;
+}
+
+.results ul li {
+  margin-bottom: 0.35rem;
+}
+
+.questions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.question {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
+
+.question p {
+  margin: 0 0 0.5rem;
+  color: #1e293b;
+}
+
+.tags {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tag {
+  font-size: 0.75rem;
+  background: #eef2ff;
+  color: #4338ca;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.tag.difficulty {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.overall {
+  color: #475569;
+  line-height: 1.5;
+}

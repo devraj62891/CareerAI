@@ -1,0 +1,84 @@
+<header class="topbar">
+  <h1>AI Interview Prep</h1>
+  <button class="ghost" (click)="logout()">Log out</button>
+</header>
+
+<main class="page">
+  <!-- STEP 1: Upload resume -->
+  <section class="card">
+    <h2>1. Upload your resume (PDF)</h2>
+    <input type="file" accept="application/pdf" (change)="onFileSelected($event)" />
+    <button (click)="uploadResume()" [disabled]="uploading()">
+      {{ uploading() ? 'Uploading…' : 'Upload' }}
+    </button>
+
+    @if (resumeId()) {
+      <p class="ok">✔ Uploaded: {{ fileName() }}</p>
+    }
+  </section>
+
+  <!-- STEP 2: Enter company + analyze -->
+  <section class="card">
+    <h2>2. Which company are you targeting?</h2>
+    <input
+      type="text"
+      [(ngModel)]="targetCompany"
+      placeholder="e.g. Google, Amazon, Cognizant"
+    />
+    <button (click)="analyze()" [disabled]="analyzing() || !resumeId()">
+      {{ analyzing() ? 'Analyzing…' : 'Analyze Resume' }}
+    </button>
+  </section>
+
+  <!-- Any error shows here -->
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <!-- STEP 3: Results -->
+  @if (analysis(); as a) {
+    <section class="card results">
+      <h2>Results</h2>
+
+      <!-- ATS score -->
+      <div class="score-row">
+        <div class="score">{{ a.atsScore }}<span>/100</span></div>
+        <p class="score-feedback">{{ a.atsFeedback }}</p>
+      </div>
+
+      <!-- Strengths -->
+      <h3>💪 Strengths</h3>
+      <ul>
+        @for (s of a.strengths; track s) {
+          <li>{{ s }}</li>
+        }
+      </ul>
+
+      <!-- Weaknesses -->
+      <h3>⚠️ Areas to Improve</h3>
+      <ul>
+        @for (w of a.weaknesses; track w) {
+          <li>{{ w }}</li>
+        }
+      </ul>
+
+      <!-- Interview questions -->
+      <h3>❓ Likely Interview Questions</h3>
+      <div class="questions">
+        @for (q of a.interviewQuestions; track q.question) {
+          <div class="question">
+            <p>{{ q.question }}</p>
+            <div class="tags">
+              <span class="tag">{{ q.category }}</span>
+              <span class="tag difficulty">{{ q.difficulty }}</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Overall -->
+      <h3>📝 Overall Feedback</h3>
+      <p class="overall">{{ a.overallFeedback }}</p>
+    </section>
+  }
+</main>

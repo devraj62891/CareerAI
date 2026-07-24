@@ -1,0 +1,34 @@
+<div class="auth-wrap">
+  <div class="card">
+    <h1>AI Interview Prep</h1>
+    <p class="subtitle">{{ isSignup() ? 'Create your account' : 'Welcome back' }}</p>
+
+    <!-- (ngSubmit) runs submit() when the form is sent -->
+    <form (ngSubmit)="submit()">
+      <!-- Name is only needed when signing up -->
+      @if (isSignup()) {
+        <label>Name</label>
+        <input type="text" name="name" [(ngModel)]="name" placeholder="Your name" required />
+      }
+
+      <label>Email</label>
+      <input type="email" name="email" [(ngModel)]="email" placeholder="you@example.com" required />
+
+      <label>Password</label>
+      <input type="password" name="password" [(ngModel)]="password" placeholder="••••••••" required />
+
+      <button type="submit" [disabled]="loading()">
+        {{ loading() ? 'Please wait…' : (isSignup() ? 'Sign Up' : 'Log In') }}
+      </button>
+    </form>
+
+    <!-- Messages -->
+    @if (error()) { <p class="msg error">{{ error() }}</p> }
+    @if (info()) { <p class="msg info">{{ info() }}</p> }
+
+    <p class="toggle">
+      {{ isSignup() ? 'Already have an account?' : "Don't have an account?" }}
+      <a (click)="toggleMode()">{{ isSignup() ? 'Log in' : 'Sign up' }}</a>
+    </p>
+  </div>
+</div>
