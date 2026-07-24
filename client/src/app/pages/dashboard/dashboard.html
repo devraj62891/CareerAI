@@ -1,6 +1,9 @@
 <header class="topbar">
-  <h1>AI Interview Prep</h1>
-  <button class="ghost" (click)="logout()">Log out</button>
+  <app-logo />
+  <div class="topbar-actions">
+    <app-theme-toggle />
+    <button class="ghost" (click)="logout()">Log out</button>
+  </div>
 </header>
 
 <main class="page">

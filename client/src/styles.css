@@ -1,4 +1,60 @@
-/* Global styles */
+/* ============================================================
+   GLOBAL STYLES + THEME COLORS
+   ------------------------------------------------------------
+   All colors are "CSS variables" (the --something values).
+   Components use var(--name) instead of hard-coded colors, so
+   switching the theme only changes these values in one place.
+
+   ThemeService sets  <html data-theme="dark">  or  "light".
+   ============================================================ */
+
+/* DARK theme = the default (also used when no data-theme is set yet). */
+:root,
+[data-theme='dark'] {
+  --bg: #0f172a; /* page background */
+  --surface: #1e293b; /* cards */
+  --surface-2: #0f172a; /* inputs / small buttons */
+  --text: #e2e8f0; /* main text */
+  --text-muted: #94a3b8; /* secondary text */
+  --border: #334155;
+  --primary: #6366f1; /* brand / buttons */
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+
+  --error-bg: #422; /* soft red */
+  --error-text: #fca5a5;
+  --info-bg: #052e2b;
+  --info-text: #6ee7b7;
+  --ok-text: #4ade80;
+
+  --tag-bg: #312e81;
+  --tag-text: #c7d2fe;
+  --tag2-bg: #422006;
+  --tag2-text: #fcd34d;
+}
+
+/* LIGHT theme = overrides only the colors that change. */
+[data-theme='light'] {
+  --bg: #f1f5f9;
+  --surface: #ffffff;
+  --surface-2: #ffffff;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #cbd5e1;
+  --primary: #6366f1;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+  --error-bg: #fef2f2;
+  --error-text: #b91c1c;
+  --info-bg: #f0fdf4;
+  --info-text: #15803d;
+  --ok-text: #15803d;
+
+  --tag-bg: #eef2ff;
+  --tag-text: #4338ca;
+  --tag2-bg: #fef3c7;
+  --tag2-text: #92400e;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -8,8 +64,9 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100%;
-  background: #f1f5f9;
+  background: var(--bg);
+  color: var(--text);
   font-family:
     'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  color: #1e293b;
+  transition: background 0.2s ease, color 0.2s ease;
 }

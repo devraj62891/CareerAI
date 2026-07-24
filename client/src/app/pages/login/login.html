@@ -1,6 +1,13 @@
 <div class="auth-wrap">
+  <!-- Theme toggle sits in the top-right corner -->
+  <div class="corner">
+    <app-theme-toggle />
+  </div>
+
   <div class="card">
-    <h1>AI Interview Prep</h1>
+    <div class="brand">
+      <app-logo />
+    </div>
     <p class="subtitle">{{ isSignup() ? 'Create your account' : 'Welcome back' }}</p>
 
     <!-- (ngSubmit) runs submit() when the form is sent -->

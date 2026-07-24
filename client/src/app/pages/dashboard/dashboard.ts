@@ -2,6 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService, Analysis } from '../../services/api';
+import { Logo } from '../../components/logo';
+import { ThemeToggle } from '../../components/theme-toggle';
 
 /**
  * Dashboard — the main screen.
@@ -10,7 +12,7 @@ import { ApiService, Analysis } from '../../services/api';
  */
 @Component({
   selector: 'app-dashboard',
-  imports: [FormsModule],
+  imports: [FormsModule, Logo, ThemeToggle],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

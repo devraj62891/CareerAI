@@ -3,23 +3,28 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
-  background: #fff;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
 }
 
-.topbar h1 {
-  margin: 0;
-  font-size: 1.15rem;
-  color: #1e293b;
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
 }
 
 .ghost {
   background: transparent;
-  border: 1px solid #cbd5e1;
-  color: #475569;
-  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.5rem 0.8rem;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.ghost:hover {
+  border-color: var(--primary);
+  color: var(--text);
 }
 
 .page {
@@ -32,16 +37,17 @@
 }
 
 .card {
-  background: #fff;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow);
 }
 
 .card h2 {
   margin: 0 0 1rem;
   font-size: 1.05rem;
-  color: #1e293b;
+  color: var(--text);
 }
 
 .card input[type='text'],
@@ -49,17 +55,19 @@
   display: block;
   width: 100%;
   padding: 0.6rem 0.75rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border);
   border-radius: 8px;
   margin-bottom: 1rem;
   box-sizing: border-box;
+  background: var(--surface-2);
+  color: var(--text);
 }
 
 .card button {
   padding: 0.6rem 1.2rem;
   border: 0;
   border-radius: 8px;
-  background: #6366f1;
+  background: var(--primary);
   color: #fff;
   font-weight: 600;
   cursor: pointer;
@@ -72,13 +80,13 @@
 
 .ok {
   margin: 1rem 0 0;
-  color: #15803d;
+  color: var(--ok-text);
   font-weight: 600;
 }
 
 .error {
-  background: #fef2f2;
-  color: #b91c1c;
+  background: var(--error-bg);
+  color: var(--error-text);
   padding: 0.75rem 1rem;
   border-radius: 8px;
   margin: 0;
@@ -95,31 +103,31 @@
 .score {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #6366f1;
+  color: var(--primary);
   line-height: 1;
 }
 
 .score span {
   font-size: 1rem;
-  color: #94a3b8;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
 .score-feedback {
   margin: 0;
-  color: #475569;
+  color: var(--text-muted);
 }
 
 .results h3 {
   margin: 1.5rem 0 0.5rem;
   font-size: 1rem;
-  color: #334155;
+  color: var(--text);
 }
 
 .results ul {
   margin: 0;
   padding-left: 1.25rem;
-  color: #475569;
+  color: var(--text-muted);
 }
 
 .results ul li {
@@ -133,14 +141,14 @@
 }
 
 .question {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0.75rem 1rem;
 }
 
 .question p {
   margin: 0 0 0.5rem;
-  color: #1e293b;
+  color: var(--text);
 }
 
 .tags {
@@ -150,18 +158,18 @@
 
 .tag {
   font-size: 0.75rem;
-  background: #eef2ff;
-  color: #4338ca;
+  background: var(--tag-bg);
+  color: var(--tag-text);
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
 }
 
 .tag.difficulty {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--tag2-bg);
+  color: var(--tag2-text);
 }
 
 .overall {
-  color: #475569;
+  color: var(--text-muted);
   line-height: 1.5;
 }

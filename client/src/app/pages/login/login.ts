@@ -2,6 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api';
+import { Logo } from '../../components/logo';
+import { ThemeToggle } from '../../components/theme-toggle';
 
 /**
  * Login / Signup screen.
@@ -10,7 +12,7 @@ import { ApiService } from '../../services/api';
  */
 @Component({
   selector: 'app-login',
-  imports: [FormsModule],
+  imports: [FormsModule, Logo, ThemeToggle],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

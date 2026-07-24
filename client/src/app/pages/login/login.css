@@ -1,4 +1,5 @@
 .auth-wrap {
+  position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -6,24 +7,30 @@
   padding: 1rem;
 }
 
+/* top-right theme toggle */
+.corner {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
 .card {
   width: 100%;
   max-width: 380px;
-  background: #fff;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 2rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow);
 }
 
-h1 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: #1e293b;
+.brand {
+  margin-bottom: 0.25rem;
 }
 
 .subtitle {
   margin: 0.25rem 0 1.5rem;
-  color: #64748b;
+  color: var(--text-muted);
 }
 
 form {
@@ -33,21 +40,23 @@ form {
 
 label {
   font-size: 0.85rem;
-  color: #475569;
+  color: var(--text-muted);
   margin-bottom: 0.25rem;
   margin-top: 0.75rem;
 }
 
 input {
   padding: 0.6rem 0.75rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 0.95rem;
+  background: var(--surface-2);
+  color: var(--text);
 }
 
 input:focus {
   outline: none;
-  border-color: #6366f1;
+  border-color: var(--primary);
 }
 
 button {
@@ -55,7 +64,7 @@ button {
   padding: 0.7rem;
   border: 0;
   border-radius: 8px;
-  background: #6366f1;
+  background: var(--primary);
   color: #fff;
   font-size: 0.95rem;
   font-weight: 600;
@@ -75,24 +84,24 @@ button:disabled {
 }
 
 .error {
-  background: #fef2f2;
-  color: #b91c1c;
+  background: var(--error-bg);
+  color: var(--error-text);
 }
 
 .info {
-  background: #f0fdf4;
-  color: #15803d;
+  background: var(--info-bg);
+  color: var(--info-text);
 }
 
 .toggle {
   margin-top: 1.25rem;
   text-align: center;
-  color: #64748b;
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 
 .toggle a {
-  color: #6366f1;
+  color: var(--primary);
   font-weight: 600;
   cursor: pointer;
 }
