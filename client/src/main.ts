@@ -1,4 +1,5 @@
-import { bootstrapApplication } from '@angular/platform-browser';
+import { bootstrapApplication } from '@angular/platform-browser';//this fucntion provided by angular tells which component to be loaded first
+
 import { appConfig } from './app/app.config';
 import { App } from './app/app';
 
