@@ -1,3 +1,5 @@
+//remember An Injector is an Angular object that stores and provides services.
+
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -29,7 +31,7 @@ export interface Analysis {
   overallFeedback: string;
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: 'root' })   //This class can participate in Dependency Injection (DI)//here providedIn:'root' means we can inject it anwhere in the application either by inject or dependency injection
 export class ApiService {
   private http = inject(HttpClient);
 

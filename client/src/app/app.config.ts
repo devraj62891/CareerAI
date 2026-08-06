@@ -1,4 +1,3 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 //here ApplicationConfig is a type available in core package
 //This registers global error handlers for the browser.
 
@@ -9,6 +8,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 // Angular application errors
 
 // Instead of your application failing silently, Angular can detect and report them.
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 
@@ -29,3 +29,12 @@ export const appConfig: ApplicationConfig = {
 
 
 // When the application starts, enable global error handling, enable routing using the routes defined in app.routes.ts, and enable HTTP requests so the application can communicate with backend APIs
+
+// Angular builds something called the Injector.
+// Injector
+// │
+// ├── Router
+// ├── HttpClient
+// ├── ErrorHandlers
+// └── Other Services
+// ` Whenever a component asks for something: constructor(private http: HttpClient)
