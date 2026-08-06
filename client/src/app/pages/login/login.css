@@ -105,3 +105,52 @@ button:disabled {
   font-weight: 600;
   cursor: pointer;
 }
+
+
+/* Field-level error messages */
+.field-error {
+  display: block;
+  color: #e53e3e;
+  font-size: 12px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+/* Red border on invalid touched inputs */
+input.ng-invalid.ng-touched {
+  border-color: #e53e3e;
+  outline-color: #e53e3e;
+}
+
+/* Green border on valid inputs */
+input.ng-valid.ng-dirty {
+  border-color: #38a169;
+}
+
+/* Password strength bar */
+.strength-bar {
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  margin: 4px 0 2px;
+  overflow: hidden;
+}
+
+.strength-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.strength-fill.weak { background: #e53e3e; }
+.strength-fill.medium { background: #ed8936; }
+.strength-fill.strong { background: #38a169; }
+
+.strength-label {
+  font-size: 11px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.strength-fill.weak + .strength-label,
+.strength-label:has(+ .weak) { color: #e53e3e; }
