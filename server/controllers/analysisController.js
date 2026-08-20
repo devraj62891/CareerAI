@@ -5,10 +5,17 @@ const analyzeUserResume = async (req, res) => {
   try {
     const { resumeId, targetCompany } = req.body;
 
-    if (!resumeId || !targetCompany) {
+    if (!resumeId) {
       return res.status(400).json({ 
-        message: "Resume ID and target company are required" 
+        message: "Resume ID is required" 
       });
+    }
+
+    if(!targetCompany){
+       return res.status(400).json({ 
+        message: "target company are required" 
+      });
+
     }
 
     const resume = await Resume.findOne({ 

@@ -25,4 +25,4 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("User", userSchema);//this create the actual usable model and it automatically cretet a users collection in tehe mongo db database
