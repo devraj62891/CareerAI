@@ -15,27 +15,27 @@ const analyzeResume = async (resumeText, targetCompany) => {
         {
           role: "user",
           content: `
-You are an expert technical interviewer and resume analyst.
-Analyze the following resume for a candidate applying to ${targetCompany}.
-Resume:
-${resumeText}
-Provide a JSON response with exactly this structure (no extra text, just JSON):
-{
-  "atsScore": <number between 0-100>,
-  "atsFeedback": "<one sentence>",
-  "strengths": ["<s1>", "<s2>", "<s3>"],
-  "weaknesses": ["<w1>", "<w2>", "<w3>"],
-  "interviewQuestions": [
-    {
-      "question": "<question>",
-      "category": "<Technical/Behavioral/HR>",
-      "difficulty": "<Easy/Medium/Hard>"
-    }
-  ],
-  "overallFeedback": "<2-3 sentences>"
-}
-Generate 8-10 interview questions.
-          `,
+                        You are an expert technical interviewer and resume analyst.
+                        Analyze the following resume for a candidate applying to ${targetCompany}.
+                        Resume:
+                        ${resumeText}
+                        Provide a JSON response with exactly this structure (no extra text, just JSON):
+                        {
+                          "atsScore": <number between 0-100>,
+                          "atsFeedback": "<one sentence>",
+                          "strengths": ["<s1>", "<s2>", "<s3>"],
+                          "weaknesses": ["<w1>", "<w2>", "<w3>"],
+                          "interviewQuestions": [
+                            {
+                              "question": "<question>",
+                              "category": "<Technical/Behavioral/HR>",
+                              "difficulty": "<Easy/Medium/Hard>"
+                            }
+                          ],
+                          "overallFeedback": "<2-3 sentences>"
+                        }
+                        Generate 8-10 interview questions.
+                  `,
         },
       ],
       model: "openai/gpt-oss-20b",
