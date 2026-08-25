@@ -10,7 +10,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
  */
 
 // Change this if your backend runs on a different port/host.
-// const API = 'http://localhost:3000/api'; for local
+// const API = 'http://localhost:3000/api'; 
 const API = 'https://careerai-baceknd.onrender.com/api';
 
 

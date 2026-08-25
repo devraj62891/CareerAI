@@ -1,0 +1,108 @@
+CAREERAI — AI SERVICE REFACTOR NOTES
+======================================
+Date: August 2026
+File: server/services/agents/
+
+WHAT WE HAD BEFORE (Single Agent):
+------------------------------------
+One file: services/aiService.js
+One Groq API call doing everything in one prompt:
+- Extract resume info
+- Score ATS
+- Find weaknesses  
+- Generate questions
+- Give feedback
+All in one big prompt → one response
+
+PROBLEMS WITH THE OLD APPROACH:
+---------------------------------
+1. AI tries to do 5 jobs at once — quality suffers
+2. If one part fails, everything fails
+3. Hard to improve one specific feature
+4. Not truly agentic — just a big prompt
+5. Generic output — not personalized or targeted
+
+WHAT WE BUILT (Multi-Agent Architecture):
+-------------------------------------------
+Four specialized agents + one orchestrator
+
+Agent 1: resumeAnalyzerAgent.js
+  Input:  raw resume text
+  Output: structured profile { fullName, skills, experience, education, summary }
+  Temp:   0.3 (fact extraction — needs accuracy)
+
+Agent 2: atsScorerAgent.js
+  Input:  profile + targetCompany
+  Output: { atsScore, atsFeedback, keywordsMatched, keywordsMissing }
+  Temp:   0.3 (scoring — needs consistency)
+
+Agent 3: weaknessAnalyzerAgent.js
+  Input:  profile + atsResult + targetCompany
+  Output: { weaknesses, missingSkills, overallReadiness, priorityActions }
+  Temp:   0.4 (analytical reasoning)
+
+Agent 4: questionGeneratorAgent.js
+  Input:  profile + atsResult + weaknessResult + targetCompany
+  Output: { interviewQuestions, focusAreas, interviewTips }
+  Temp:   0.7 (creative — needs variation)
+
+Orchestrator: orchestrator.js
+  Runs all 4 agents in sequence
+  Passes each agent's output to the next
+  Combines all results into one final response
+
+KEY IMPROVEMENTS:
+------------------
+1. Each agent has ONE job — higher quality output
+2. Each agent builds on previous agent's output (chaining)
+3. Questions are targeted at KNOWN weaknesses (not generic)
+4. ATS feedback shows EXACT keywords matched/missing
+5. Weakness advice is specific and actionable
+6. Temperature tuned per agent based on task type
+7. System + user message roles used (not just user)
+8. Easier to improve — change one agent without touching others
+
+THE CHAIN (how data flows):
+-----------------------------
+Raw resume text
+      ↓
+Agent 1 → profile
+      ↓
+Agent 2 → profile + company → atsResult
+      ↓
+Agent 3 → profile + atsResult + company → weaknessResult
+      ↓
+Agent 4 → profile + atsResult + weaknessResult + company → questionResult
+      ↓
+Orchestrator → combines all → final response to controller
+
+WHY THIS IS "AGENTIC":
+------------------------
+- Each agent is a specialized AI with one responsibility
+- Agents build on each other's outputs (not isolated calls)
+- Orchestrator coordinates the flow (like a manager)
+- Context grows richer at each step
+- Output quality improves because each agent focuses deeply
+
+INTERVIEW ANSWER:
+------------------
+"I converted a single monolithic AI prompt into a 
+multi-agent architecture where four specialized agents 
+handle individual tasks — resume parsing, ATS scoring, 
+weakness analysis, and question generation. Each agent 
+receives the previous agent's output as context, so by 
+the time the question generator runs it knows the full 
+candidate profile, ATS gaps, and specific weaknesses. 
+This produces targeted, personalized output compared to 
+a single generic prompt. The orchestrator coordinates 
+the sequence and combines all results."
+
+FILES CHANGED:
+---------------
+OLD: services/aiService.js (single call)
+NEW: services/agents/resumeAnalyzerAgent.js
+     services/agents/atsScorerAgent.js
+     services/agents/weaknessAnalyzerAgent.js
+     services/agents/questionGeneratorAgent.js
+     services/agents/orchestrator.js (to be built)
+     services/aiService.js (updated to call orchestrator)
