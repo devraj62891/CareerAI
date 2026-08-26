@@ -58,12 +58,19 @@
       </ul>
 
       <!-- Weaknesses -->
-      <h3>⚠️ Areas to Improve</h3>
-      <ul>
-        @for (w of a.weaknesses; track w) {
-          <li>{{ w }}</li>
-        }
-      </ul>
+     <!-- Weaknesses -->
+<h3>⚠️ Areas to Improve</h3>
+<ul>
+  @for (w of a.weaknesses; track w.area) {
+    <li>
+      <strong>{{ w.area }}</strong> — {{ w.description }}
+      <br />
+      <em>How to improve:</em> {{ w.howToImprove }}
+    </li>
+  }
+</ul>
+
+
 
       <!-- Interview questions -->
       <h3>❓ Likely Interview Questions</h3>

@@ -1,4 +1,21 @@
 const Groq = require("groq-sdk");
+const { jsonrepair } = require("jsonrepair");
+
+// Helper: safe JSON parsing with repair + logging
+function safeParseJSON(text) {
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    console.warn("⚠️ JSON malformed, attempting repair...");
+    try {
+      const repaired = jsonrepair(text);
+      return JSON.parse(repaired);
+    } catch (repairErr) {
+      console.error("❌ Could not repair JSON:\n", text);
+      throw new Error("Failed to parse or repair JSON from Groq response");
+    }
+  }
+}
 
 const questionGeneratorAgent = async (profile, atsResult, weaknessResult, targetCompany) => {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
@@ -7,7 +24,10 @@ const questionGeneratorAgent = async (profile, atsResult, weaknessResult, target
     messages: [
       {
         role: "system",
-        content: "You are an expert technical interviewer at a top tech company. You generate highly targeted interview questions based on a candidate's specific profile, weaknesses, and target company. Return only valid JSON, no extra text.",
+        content:
+          "You are an expert technical interviewer at a top tech company. " +
+          "You generate highly targeted interview questions based on a candidate's specific profile, weaknesses, and target company. " +
+          "Return only valid JSON, no extra text. All arrays must contain plain strings, not objects.",
       },
       {
         role: "user",
@@ -47,13 +67,17 @@ Return ONLY this JSON:
         `,
       },
     ],
-    model: "llama3-8b-8192",
+    model: "openai/gpt-oss-20b",   // ✅ supported model
     temperature: 0.7,
   });
 
   const responseText = completion.choices[0]?.message?.content || "";
-  const cleaned = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
-  return JSON.parse(cleaned);
+  const cleaned = responseText
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
+
+  return safeParseJSON(cleaned);
 };
 
 module.exports = questionGeneratorAgent;

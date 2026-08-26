@@ -1,3 +1,10 @@
+// server/services/aiService.js
+
+const resumeAnalyzerAgent = require("./resumeAnalyzerAgent");
+const atsScorerAgent = require("./atsScorerAgent");
+const weaknessAnalyzerAgent = require("./weaknessAnalyzerAgent");
+const questionGeneratorAgent = require("./questionGeneratorAgent");
+
 const orchestrate = async (resumeText, targetCompany) => {
   console.log("🤖 Orchestrator started...");
 
@@ -40,3 +47,5 @@ const orchestrate = async (resumeText, targetCompany) => {
     throw error;
   }
 };
+
+module.exports = orchestrate;

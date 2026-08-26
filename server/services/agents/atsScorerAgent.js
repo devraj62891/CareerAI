@@ -1,5 +1,20 @@
 const Groq = require("groq-sdk");
 
+function safeParseJSON(text) {
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    console.error("❌ Invalid JSON from Groq:\n", text);
+    throw new Error("Failed to parse JSON from Groq response");
+  }
+}
+
+function normalizeArray(arr) {
+  return arr.map(item =>
+    typeof item === "object" ? JSON.stringify(item) : String(item)
+  );
+}
+
 const atsScorerAgent = async (profile, targetCompany) => {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
@@ -7,7 +22,9 @@ const atsScorerAgent = async (profile, targetCompany) => {
     messages: [
       {
         role: "system",
-        content: "You are an ATS (Applicant Tracking System) specialist. You evaluate resumes against company requirements and industry standards. Return only valid JSON, no extra text.",
+        content:
+          "You are an ATS (Applicant Tracking System) specialist. Evaluate resumes against company requirements and industry standards. " +
+          "Return only valid JSON. All values must be plain strings or arrays of strings.",
       },
       {
         role: "user",
@@ -17,7 +34,7 @@ You are evaluating a candidate applying to ${targetCompany}.
 Candidate Profile:
 ${JSON.stringify(profile, null, 2)}
 
-Score this candidate's resume for ${targetCompany} and return ONLY this JSON:
+Return ONLY this JSON:
 {
   "atsScore": <number between 0-100>,
   "atsFeedback": "<one sentence explaining the score>",
@@ -28,37 +45,23 @@ Score this candidate's resume for ${targetCompany} and return ONLY this JSON:
         `,
       },
     ],
-    model: "llama3-8b-8192",
+    model: "openai/gpt-oss-20b", // ✅ supported model
     temperature: 0.3,
   });
 
   const responseText = completion.choices[0]?.message?.content || "";
   const cleaned = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
-  return JSON.parse(cleaned);
+  const parsed = safeParseJSON(cleaned);
+
+  // Normalize arrays
+  if (Array.isArray(parsed.keywordsMatched)) {
+    parsed.keywordsMatched = normalizeArray(parsed.keywordsMatched);
+  }
+  if (Array.isArray(parsed.keywordsMissing)) {
+    parsed.keywordsMissing = normalizeArray(parsed.keywordsMissing);
+  }
+
+  return parsed;
 };
 
 module.exports = atsScorerAgent;
-
-
-
-
-
-// A hybrid approach could also be there 
-
-// Agent 2 (ATS Scorer) — Hybrid Version:
-
-// Step 1 — Math (our code):
-//   matchedCount = profile.skills.filter(
-//     skill => companyKeywords.includes(skill)
-//   ).length;
-//   baseScore = (matchedCount / companyKeywords.length) * 100;
-
-// Step 2 — LLM (for context):
-//   "Given this base score of {baseScore} and these matched/missing 
-//   keywords, provide qualitative feedback and adjust the score 
-//   considering experience relevance and career progression"
-
-// Step 3 — Combine:
-//   finalScore = (baseScore * 0.6) + (llmScore * 0.4)
-
-//Note:- Currently it uses LLM-based evaluation — the model draws on its training knowledge of ATS systems and hiring criteria to score resumes. This has the advantage of contextual understanding but lacks auditability. A production improvement would be a hybrid approach — deterministic keyword matching for a base score, combined with LLM evaluation for contextual factors like experience relevance and career progression. I documented this as a known limitation and planned enhancement.

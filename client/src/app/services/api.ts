@@ -22,14 +22,29 @@ export interface InterviewQuestion {
   difficulty: string; // Easy / Medium / Hard
 }
 
+export interface Weakness {
+  area: string;
+  description: string;
+  howToImprove: string;
+}
+
+export interface InterviewQuestion {
+  question: string;
+  category: string;
+  difficulty: string;
+  targetArea: string;
+  whyAsked: string;
+}
+
 export interface Analysis {
   atsScore: number;
   atsFeedback: string;
   strengths: string[];
-  weaknesses: string[];
+  weaknesses: Weakness[];   // ✅ now objects
   interviewQuestions: InterviewQuestion[];
   overallFeedback: string;
 }
+
 
 @Injectable({ providedIn: 'root' })   //This class can participate in Dependency Injection (DI)//here providedIn:'root' means we can inject it anwhere in the application either by inject or dependency injection
 export class ApiService {
