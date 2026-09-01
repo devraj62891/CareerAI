@@ -1,7 +1,6 @@
 const Groq = require("groq-sdk");
 const { jsonrepair } = require("jsonrepair");
 
-// Helper: safe JSON parsing with repair + logging
 function safeParseJSON(text) {
   try {
     return JSON.parse(text);
@@ -17,8 +16,12 @@ function safeParseJSON(text) {
   }
 }
 
-const questionGeneratorAgent = async (profile, atsResult, weaknessResult, targetCompany) => {
+const questionGeneratorAgent = async (profile, atsResult, weaknessResult, targetCompany, jobDescription = '') => {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+  const jobDescriptionSection = jobDescription
+    ? `\nActual Job Description provided by candidate:\n${jobDescription}\n`
+    : `\n(No job description provided — generate based on ${targetCompany} standards)\n`;
 
   const completion = await groq.chat.completions.create({
     messages: [
@@ -33,7 +36,7 @@ const questionGeneratorAgent = async (profile, atsResult, weaknessResult, target
         role: "user",
         content: `
 You are preparing interview questions for a candidate applying to ${targetCompany}.
-
+${jobDescriptionSection}
 Candidate Profile:
 ${JSON.stringify(profile, null, 2)}
 
@@ -44,6 +47,7 @@ Weakness Analysis:
 ${JSON.stringify(weaknessResult, null, 2)}
 
 Generate 10 highly targeted interview questions based on ALL the above context.
+${jobDescription ? 'Focus especially on requirements mentioned in the job description.' : ''}
 Focus questions on:
 1. The candidate's actual skills (from profile)
 2. Their weakness areas (from weakness analysis)
@@ -67,7 +71,7 @@ Return ONLY this JSON:
         `,
       },
     ],
-    model: "openai/gpt-oss-20b",   // ✅ supported model
+    model: "openai/gpt-oss-20b",
     temperature: 0.7,
   });
 

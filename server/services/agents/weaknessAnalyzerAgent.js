@@ -1,6 +1,5 @@
 const Groq = require("groq-sdk");
 
-// Helper: safe JSON parsing with logging
 function safeParseJSON(text) {
   try {
     return JSON.parse(text);
@@ -10,15 +9,18 @@ function safeParseJSON(text) {
   }
 }
 
-// Normalize arrays to ensure plain strings
 function normalizeArray(arr) {
   return arr.map(item =>
     typeof item === "object" ? JSON.stringify(item) : String(item)
   );
 }
 
-const weaknessAnalyzerAgent = async (profile, atsResult, targetCompany) => {
+const weaknessAnalyzerAgent = async (profile, atsResult, targetCompany, jobDescription = '') => {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+  const jobDescriptionSection = jobDescription
+    ? `\nActual Job Description provided by candidate:\n${jobDescription}\n`
+    : `\n(No job description provided — use general ${targetCompany} requirements)\n`;
 
   const completion = await groq.chat.completions.create({
     messages: [
@@ -32,7 +34,7 @@ const weaknessAnalyzerAgent = async (profile, atsResult, targetCompany) => {
         role: "user",
         content: `
 You are analyzing a candidate applying to ${targetCompany}.
-
+${jobDescriptionSection}
 Candidate Profile:
 ${JSON.stringify(profile, null, 2)}
 
@@ -56,7 +58,7 @@ Return ONLY this JSON:
         `,
       },
     ],
-    model: "openai/gpt-oss-20b", // ✅ supported model
+    model: "openai/gpt-oss-20b",
     temperature: 0.4,
   });
 
@@ -64,7 +66,6 @@ Return ONLY this JSON:
   const cleaned = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
   const parsed = safeParseJSON(cleaned);
 
-  // Normalize arrays to avoid [object Object]
   if (Array.isArray(parsed.missingSkills)) {
     parsed.missingSkills = normalizeArray(parsed.missingSkills);
   }

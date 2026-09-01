@@ -22,12 +22,24 @@
 
   <!-- STEP 2: Enter company + analyze -->
   <section class="card">
-    <h2>2. Which company are you targeting?</h2>
-    <input
-      type="text"
-      [(ngModel)]="targetCompany"
-      placeholder="e.g. Google, Amazon, Cognizant"
-    />
+      <h2>2. Which company are you targeting?</h2>
+      <input
+        type="text"
+        [(ngModel)]="targetCompany"
+        placeholder="e.g. Google, Amazon, Cognizant"
+      />
+
+      <!-- NEW: Job Description (optional) -->
+      <label style="margin-top: 12px; display: block;">
+        Job Description 
+        <span style="color: gray; font-size: 12px;">(optional — paste for more targeted analysis)</span>
+      </label>
+      <textarea
+        [(ngModel)]="jobDescription"
+        placeholder="Paste the job description here for more accurate analysis..."
+        rows="5"
+        style="width: 100%; margin-top: 4px; padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); resize: vertical;"
+      ></textarea>
     <button (click)="analyze()" [disabled]="analyzing() || !resumeId()">
       {{ analyzing() ? 'Analyzing…' : 'Analyze Resume' }}
     </button>

@@ -28,6 +28,7 @@ export class Dashboard {
 
   // Step 2 — analyze
   targetCompany = '';
+  jobDescription = '';
   analyzing = signal(false);
 
   // Step 3 — results
@@ -75,7 +76,7 @@ export class Dashboard {
     this.analyzing.set(true);
     this.analysis.set(null);
 
-    this.api.analyze(this.resumeId(), this.targetCompany).subscribe({
+    this.api.analyze(this.resumeId(), this.targetCompany,this.jobDescription).subscribe({
       next: (res) => {
         this.analyzing.set(false);
         this.analysis.set(res.analysis);
