@@ -47,9 +47,10 @@ const validateSignup = [
 // ── Login validation rules ─────────────────────────────────────
 const validateLogin = [
   body("email")
-    .trim()
-    .notEmpty().withMessage("Email is required")
-    .isEmail().withMessage("Please provide a valid email address"),
+  .trim()
+  .notEmpty().withMessage("Email is required")
+  .isEmail().withMessage("Please provide a valid email address")
+  .toLowerCase(), // just lowercase, no dot removal
 
   body("password")
     .notEmpty().withMessage("Password is required"),
