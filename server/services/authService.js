@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { sendWelcomeEmail } = require("./emailService");
 
 // Business logic for registering a new user
 const registerUser = async (name, email, password) => {
@@ -20,6 +21,11 @@ const registerUser = async (name, email, password) => {
     email,
     password: hashedPassword,
   });
+
+  // Send welcome email in background — don't await so signup stays fast
+  sendWelcomeEmail(name, email).catch(err =>
+    console.error("❌ Welcome email failed:", err.message)
+  );
 
   return {
     id: newUser._id,
