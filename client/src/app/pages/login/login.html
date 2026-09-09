@@ -4,108 +4,149 @@
   </div>
 
   <div class="card">
+    <!-- Logo + Header -->
     <div class="brand">
       <app-logo />
     </div>
-    <p class="subtitle">{{ isSignup() ? 'Create your account' : 'Welcome back' }}</p>
+
+    <h1 class="title">{{ isSignup() ? 'Create account' : 'Welcome back' }}</h1>
+    <p class="subtitle">
+      {{ isSignup() ? 'Start your interview preparation journey' : 'Sign in to continue to CareerAI' }}
+    </p>
 
     <form (ngSubmit)="submit()" #authForm="ngForm">
 
       <!-- NAME (signup only) -->
       @if (isSignup()) {
-        <label>Name</label>
-        <input
-          type="text"
-          name="name"
-          [(ngModel)]="name"
-          #nameInput="ngModel"
-          placeholder="Your name"
-          required
-          minlength="2"
-          maxlength="50"
-        />
-        @if (nameInput.invalid && nameInput.touched) {
-          @if (nameInput.errors?.['required']) {
-            <span class="field-error">Name is required</span>
+        <div class="field">
+          <label>Full Name</label>
+          <input
+            type="text"
+            name="name"
+            [(ngModel)]="name"
+            #nameInput="ngModel"
+            placeholder="Devraj Sharma"
+            required
+            minlength="2"
+            maxlength="50"
+            [class.invalid]="nameInput.invalid && nameInput.touched"
+            [class.valid]="nameInput.valid && nameInput.dirty"
+          />
+          @if (nameInput.invalid && nameInput.touched) {
+            @if (nameInput.errors?.['required']) {
+              <span class="field-error">Name is required</span>
+            }
+            @if (nameInput.errors?.['minlength']) {
+              <span class="field-error">Name must be at least 2 characters</span>
+            }
+            @if (nameInput.errors?.['maxlength']) {
+              <span class="field-error">Name cannot exceed 50 characters</span>
+            }
           }
-          @if (nameInput.errors?.['minlength']) {
-            <span class="field-error">Name must be at least 2 characters</span>
-          }
-          @if (nameInput.errors?.['maxlength']) {
-            <span class="field-error">Name cannot exceed 50 characters</span>
-          }
-        }
+        </div>
       }
 
       <!-- EMAIL -->
-      <label>Email</label>
-      <input
-        type="email"
-        name="email"
-        [(ngModel)]="email"
-        #emailInput="ngModel"
-        placeholder="you@example.com"
-        required
-        email
-      />
-      @if (emailInput.invalid && emailInput.touched) {
-        @if (emailInput.errors?.['required']) {
-          <span class="field-error">Email is required</span>
+      <div class="field">
+        <label>Email Address</label>
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          #emailInput="ngModel"
+          placeholder="you@example.com"
+          required
+          email
+          [class.invalid]="emailInput.invalid && emailInput.touched"
+          [class.valid]="emailInput.valid && emailInput.dirty"
+        />
+        @if (emailInput.invalid && emailInput.touched) {
+          @if (emailInput.errors?.['required']) {
+            <span class="field-error">Email is required</span>
+          }
+          @if (emailInput.errors?.['email']) {
+            <span class="field-error">Please enter a valid email address</span>
+          }
         }
-        @if (emailInput.errors?.['email']) {
-          <span class="field-error">Please enter a valid email address</span>
-        }
-      }
+      </div>
 
       <!-- PASSWORD -->
-      <label>Password</label>
-      <input
-        type="password"
-        name="password"
-        [(ngModel)]="password"
-        #passwordInput="ngModel"
-        placeholder="••••••••"
-        required
-        minlength="8"
-        [pattern]="isSignup() ? passwordPattern : ''"
-      />
-      @if (passwordInput.invalid && passwordInput.touched) {
-        @if (passwordInput.errors?.['required']) {
-          <span class="field-error">Password is required</span>
+      <div class="field">
+        <label>Password</label>
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          #passwordInput="ngModel"
+          placeholder="••••••••"
+          required
+          minlength="8"
+          [pattern]="isSignup() ? passwordPattern : ''"
+          [class.invalid]="passwordInput.invalid && passwordInput.touched"
+          [class.valid]="passwordInput.valid && passwordInput.dirty"
+        />
+        @if (passwordInput.invalid && passwordInput.touched) {
+          @if (passwordInput.errors?.['required']) {
+            <span class="field-error">Password is required</span>
+          }
+          @if (passwordInput.errors?.['minlength']) {
+            <span class="field-error">Password must be at least 8 characters</span>
+          }
+          @if (passwordInput.errors?.['pattern'] && isSignup()) {
+            <span class="field-error">
+              Must contain uppercase, lowercase, number and special character (@$!%*?&amp;#)
+            </span>
+          }
         }
-        @if (passwordInput.errors?.['minlength']) {
-          <span class="field-error">Password must be at least 8 characters</span>
-        }
-        @if (passwordInput.errors?.['pattern'] && isSignup()) {
-          <span class="field-error">
-            Password must contain uppercase, lowercase, a number, and a special character (@$!%*?&amp;#)
-          </span>
-        }
-      }
+      </div>
 
       <!-- PASSWORD STRENGTH METER (signup only) -->
       @if (isSignup() && password.length > 0) {
-        <div class="strength-bar">
-          <div
-            class="strength-fill"
-            [style.width]="passwordStrength() + '%'"
-            [class]="strengthClass()"
-          ></div>
+        <div class="strength-wrap">
+          <div class="strength-bar">
+            <div
+              class="strength-fill"
+              [style.width]="passwordStrength() + '%'"
+              [class]="strengthClass()"
+            ></div>
+          </div>
+          <span class="strength-label" [class]="strengthClass()">
+            {{ strengthLabel() }}
+          </span>
         </div>
-        <span class="strength-label">{{ strengthLabel() }}</span>
       }
 
-      <button type="submit" [disabled]="loading() || (isSignup() && authForm.invalid)">
-        {{ loading() ? 'Please wait…' : (isSignup() ? 'Sign Up' : 'Log In') }}
+      <!-- SUBMIT BUTTON -->
+      <button
+        type="submit"
+        class="submit-btn"
+        [disabled]="loading() || (isSignup() && authForm.invalid)"
+      >
+        @if (loading()) {
+          <span class="btn-spinner"></span>
+          Please wait…
+        } @else {
+          {{ isSignup() ? '🚀 Create Account' : '→ Sign In' }}
+        }
       </button>
+
     </form>
 
-    @if (error()) { <p class="msg error">{{ error() }}</p> }
-    @if (info()) { <p class="msg info">{{ info() }}</p> }
+    <!-- Messages -->
+    @if (error()) {
+      <div class="msg error">⚠️ {{ error() }}</div>
+    }
+    @if (info()) {
+      <div class="msg info">✅ {{ info() }}</div>
+    }
 
+    <!-- Toggle -->
     <p class="toggle">
       {{ isSignup() ? 'Already have an account?' : "Don't have an account?" }}
-      <a (click)="toggleMode()">{{ isSignup() ? 'Log in' : 'Sign up' }}</a>
+      <a (click)="toggleMode()">
+        {{ isSignup() ? 'Sign in' : 'Sign up free' }}
+      </a>
     </p>
+
   </div>
 </div>

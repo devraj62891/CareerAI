@@ -10,16 +10,17 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
  */
 
 // Change this if your backend runs on a different port/host.
-// const API = 'http://localhost:3000/api'; 
-const API = 'https://careerai-baceknd.onrender.com/api';
-
+const API = 'http://localhost:3000/api';
+// const API = 'https://careerai-baceknd.onrender.com/api';
 
 // ---- Shapes of the data the backend sends back ----
-// (Just for editor autocomplete + fewer typos. Matches aiService.js exactly.)
-export interface InterviewQuestion {
-  question: string;
-  category: string;   // Technical / Behavioral / HR
-  difficulty: string; // Easy / Medium / Hard
+
+export interface Candidate {
+  fullName: string;
+  currentRole: string;
+  totalExperience: string;
+  skills: string[];
+  summary: string;
 }
 
 export interface Weakness {
@@ -32,21 +33,41 @@ export interface InterviewQuestion {
   question: string;
   category: string;
   difficulty: string;
-  targetArea: string;
-  whyAsked: string;
+  targetArea?: string;
+  whyAsked?: string;
 }
 
 export interface Analysis {
+  // From Agent 1
+  candidate?: {
+    fullName: string;
+    currentRole: string;
+    totalExperience: string;
+    skills: string[];
+    summary: string;
+  };
+  // From Agent 2
   atsScore: number;
   atsFeedback: string;
-  strengths: string[];
-  weaknesses: Weakness[];   // ✅ now objects
+  keywordsMatched?: string[];
+  keywordsMissing?: string[];
+  formatFeedback?: string;
+  // From Agent 3
+  weaknesses: Weakness[];
+  missingSkills?: string[];
+  experienceGaps?: string;
+  overallReadiness?: string;
+  priorityActions?: string[];
+  // From Agent 4
   interviewQuestions: InterviewQuestion[];
-  overallFeedback: string;
+  focusAreas?: string[];
+  interviewTips?: string;
+  // Legacy
+  strengths?: string[];
+  overallFeedback?: string;
 }
 
-
-@Injectable({ providedIn: 'root' })   //This class can participate in Dependency Injection (DI)//here providedIn:'root' means we can inject it anwhere in the application either by inject or dependency injection
+@Injectable({ providedIn: 'root' })
 export class ApiService {
   private http = inject(HttpClient);
 
@@ -86,8 +107,6 @@ export class ApiService {
   }
 
   login(email: string, password: string) {
-    // .post returns an Observable. We tap the token out of it in the component,
-    // but expose a helper so the component doesn't need to know the shape.
     return this.http.post<{ token: string; user: any }>(`${API}/auth/login`, {
       email,
       password,
@@ -100,7 +119,6 @@ export class ApiService {
   }
 
   // ---- RESUME UPLOAD ----
-  // The backend expects multipart/form-data with a field named "resume".
   uploadResume(file: File) {
     const form = new FormData();
     form.append('resume', file);
@@ -113,10 +131,10 @@ export class ApiService {
 
   // ---- ANALYSIS ----
   analyze(resumeId: string, targetCompany: string, jobDescription: string = '') {
-  return this.http.post<{ fileName: string; targetCompany: string; analysis: Analysis }>(
-    `${API}/analysis/analyze`,
-    { resumeId, targetCompany, jobDescription },
-    this.authHeaders(),
-  );
-}
+    return this.http.post<{ fileName: string; targetCompany: string; analysis: Analysis }>(
+      `${API}/analysis/analyze`,
+      { resumeId, targetCompany, jobDescription },
+      this.authHeaders(),
+    );
+  }
 }

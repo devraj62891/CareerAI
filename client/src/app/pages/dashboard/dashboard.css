@@ -1,3 +1,4 @@
+/* ── Topbar ── */
 .topbar {
   display: flex;
   align-items: center;
@@ -5,6 +6,9 @@
   padding: 1rem 1.5rem;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .topbar-actions {
@@ -20,6 +24,7 @@
   padding: 0.5rem 0.8rem;
   border-radius: 8px;
   cursor: pointer;
+  font-size: 0.875rem;
 }
 
 .ghost:hover {
@@ -27,133 +32,624 @@
   color: var(--text);
 }
 
+/* ── Page Layout ── */
 .page {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem;
+  padding: 2rem 1rem 4rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
+/* ── Step Indicators ── */
+.steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 1rem 0;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+}
+
+.step.active,
+.step.done {
+  opacity: 1;
+}
+
+.step-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  transition: all 0.3s;
+}
+
+.step.active .step-num {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.step.done .step-num {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.step span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.step-line {
+  width: 60px;
+  height: 2px;
+  background: var(--border);
+  margin-bottom: 18px;
+  transition: background 0.3s;
+}
+
+.step-line.done {
+  background: var(--primary);
+}
+
+/* ── Cards ── */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 1.5rem;
   box-shadow: var(--shadow);
+  transition: opacity 0.3s;
+}
+
+.card-disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .card h2 {
-  margin: 0 0 1rem;
-  font-size: 1.05rem;
+  margin: 0 0 0.25rem;
+  font-size: 1.1rem;
   color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
+.card-subtitle {
+  margin: 0 0 1.25rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.step-badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Upload Area ── */
+.upload-area {
+  display: block;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.upload-area:hover {
+  border-color: var(--primary);
+  background: var(--surface-2);
+}
+
+.upload-area.has-file {
+  border-color: var(--ok-text);
+  border-style: solid;
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.upload-icon {
+  font-size: 2rem;
+}
+
+.upload-text {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.upload-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Inputs ── */
 .card input[type='text'],
-.card input[type='file'] {
+.card textarea {
   display: block;
   width: 100%;
-  padding: 0.6rem 0.75rem;
+  padding: 0.7rem 0.85rem;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   margin-bottom: 1rem;
   box-sizing: border-box;
   background: var(--surface-2);
   color: var(--text);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
 }
 
-.card button {
-  padding: 0.6rem 1.2rem;
+.card input[type='text']:focus,
+.card textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.card textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.jd-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.optional-tag {
+  font-size: 0.75rem;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  padding: 0.7rem 1.4rem;
   border: 0;
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--primary);
   color: #fff;
   font-weight: 600;
   cursor: pointer;
+  font-size: 0.95rem;
+  transition: opacity 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.card button:disabled {
-  opacity: 0.6;
+.btn-primary:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
+/* ── Analyzing spinner ── */
+.analyzing-text {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Messages ── */
 .ok {
-  margin: 1rem 0 0;
+  margin: 0.75rem 0 0;
   color: var(--ok-text);
   font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .error {
   background: var(--error-bg);
   color: var(--error-text);
   padding: 0.75rem 1rem;
-  border-radius: 8px;
+  border-radius: 10px;
   margin: 0;
+  font-size: 0.9rem;
 }
 
-/* ---- Results ---- */
-.score-row {
+/* ── Results Header ── */
+.results-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
 }
 
-.score {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: var(--primary);
-  line-height: 1;
-}
-
-.score span {
-  font-size: 1rem;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.score-feedback {
+.results-header h2 {
   margin: 0;
-  color: var(--text-muted);
+  font-size: 1.25rem;
 }
 
-.results h3 {
-  margin: 1.5rem 0 0.5rem;
+.company-badge {
+  background: var(--primary);
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* ── Candidate Card ── */
+.candidate-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: var(--surface-2);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border);
+}
+
+.candidate-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.candidate-info {
+  flex: 1;
+}
+
+.candidate-info h3 {
+  margin: 0 0 0.2rem;
   font-size: 1rem;
   color: var(--text);
 }
 
-.results ul {
-  margin: 0;
-  padding-left: 1.25rem;
+.candidate-info p {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
 }
 
-.results ul li {
-  margin-bottom: 0.35rem;
+.skills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.skill-chip {
+  font-size: 0.75rem;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.readiness-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.readiness-ready {
+  background: #14532d;
+  color: #4ade80;
+}
+
+.readiness-partial {
+  background: #422006;
+  color: #fcd34d;
+}
+
+.readiness-not {
+  background: #422;
+  color: #fca5a5;
+}
+
+/* ── ATS Score Circle ── */
+.score-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: var(--surface-2);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid var(--border);
+}
+
+.score-circle {
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+}
+
+.circular-chart {
+  width: 90px;
+  height: 90px;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 3;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dasharray 1s ease;
+}
+
+.score-circle.score-high .circle { stroke: #4ade80; }
+.score-circle.score-mid .circle  { stroke: #fcd34d; }
+.score-circle.score-low .circle  { stroke: #f87171; }
+
+.percentage {
+  fill: var(--text);
+  font-size: 9px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.score-details h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.score-feedback {
+  margin: 0 0 0.4rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.format-feedback {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* ── Keywords ── */
+.keywords-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.keyword-group h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.keyword-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chip {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+.chip-green {
+  background: #14532d;
+  color: #4ade80;
+}
+
+.chip-red {
+  background: #422;
+  color: #fca5a5;
+}
+
+/* ── Priority Actions ── */
+.priority-section {
+  margin-bottom: 1.5rem;
+}
+
+.priority-section h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.priority-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.priority-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.priority-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Weaknesses ── */
+.weakness-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.weakness-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  background: var(--surface-2);
+}
+
+.weakness-header {
+  margin-bottom: 0.4rem;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.weakness-desc {
+  margin: 0 0 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.improvement-tip {
+  background: var(--info-bg);
+  color: var(--info-text);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+/* ── Interview Questions ── */
+.interview-tips {
+  background: var(--info-bg);
+  color: var(--info-text);
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
 }
 
 .questions {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .question {
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  background: var(--surface-2);
 }
 
-.question p {
+.question-num {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--tag-bg);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.question-body {
+  flex: 1;
+}
+
+.question-body p {
   margin: 0 0 0.5rem;
   color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .tags {
   display: flex;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
 }
 
 .tag {
@@ -169,7 +665,29 @@
   color: var(--tag2-text);
 }
 
+.tag.target {
+  background: var(--surface);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.why-asked {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ── Overall Feedback ── */
+.results h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  color: var(--text);
+}
+
 .overall {
   color: var(--text-muted);
-  line-height: 1.5;
+  line-height: 1.6;
+  font-size: 0.9rem;
+  margin: 0;
 }

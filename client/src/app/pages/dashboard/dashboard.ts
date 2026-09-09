@@ -5,11 +5,6 @@ import { ApiService, Analysis } from '../../services/api';
 import { Logo } from '../../components/logo';
 import { ThemeToggle } from '../../components/theme-toggle';
 
-/**
- * Dashboard — the main screen.
- * Flow: 1) pick a PDF resume -> upload it   2) type a company -> analyze
- *       3) show the AI results (score, strengths, weaknesses, questions).
- */
 @Component({
   selector: 'app-dashboard',
   imports: [FormsModule, Logo, ThemeToggle],
@@ -20,23 +15,19 @@ export class Dashboard {
   private api = inject(ApiService);
   private router = inject(Router);
 
-  // Step 1 — upload
   selectedFile: File | null = null;
-  resumeId = signal('');        // set after a successful upload
+  resumeId = signal('');
   fileName = signal('');
   uploading = signal(false);
 
-  // Step 2 — analyze
   targetCompany = '';
   jobDescription = '';
   analyzing = signal(false);
+  analyzingStep = signal('Analyzing…');
 
-  // Step 3 — results
   analysis = signal<Analysis | null>(null);
-
   error = signal('');
 
-  // Called when the user picks a file in the <input type="file">
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.selectedFile = input.files?.[0] || null;
@@ -76,16 +67,46 @@ export class Dashboard {
     this.analyzing.set(true);
     this.analysis.set(null);
 
-    this.api.analyze(this.resumeId(), this.targetCompany,this.jobDescription).subscribe({
+    // Simulate agent progress messages
+    const steps = [
+      '📄 Parsing resume…',
+      '📊 Scoring ATS…',
+      '🔍 Analyzing gaps…',
+      '❓ Generating questions…',
+    ];
+    let i = 0;
+    this.analyzingStep.set(steps[0]);
+    const interval = setInterval(() => {
+      i = (i + 1) % steps.length;
+      this.analyzingStep.set(steps[i]);
+    }, 3000);
+
+    this.api.analyze(this.resumeId(), this.targetCompany, this.jobDescription).subscribe({
       next: (res) => {
+        clearInterval(interval);
         this.analyzing.set(false);
         this.analysis.set(res.analysis);
       },
       error: (err) => {
+        clearInterval(interval);
         this.analyzing.set(false);
         this.error.set(err?.error?.message || 'Analysis failed');
       },
     });
+  }
+
+  getReadinessClass(readiness: string): string {
+    if (!readiness) return '';
+    const r = readiness.toLowerCase();
+    if (r.includes('not')) return 'readiness-badge readiness-not';
+    if (r.includes('partial')) return 'readiness-badge readiness-partial';
+    return 'readiness-badge readiness-ready';
+  }
+
+  getScoreClass(score: number): string {
+    if (score >= 70) return 'score-circle score-high';
+    if (score >= 40) return 'score-circle score-mid';
+    return 'score-circle score-low';
   }
 
   logout(): void {

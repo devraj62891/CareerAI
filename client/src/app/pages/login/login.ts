@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api';
@@ -42,7 +42,6 @@ export class Login {
     return score;
   }
 
-  // CSS class for the strength bar color
   strengthClass(): string {
     const s = this.passwordStrength();
     if (s < 40) return 'weak';
@@ -50,19 +49,17 @@ export class Login {
     return 'strong';
   }
 
-  // Label text for the strength bar
   strengthLabel(): string {
     const s = this.passwordStrength();
     if (s < 40) return 'Weak password';
     if (s < 70) return 'Medium strength';
-    return 'Strong password';
+    return 'Strong password ✓';
   }
 
   toggleMode(): void {
     this.isSignup.set(!this.isSignup());
     this.error.set('');
     this.info.set('');
-    // Reset fields when switching modes
     this.name = '';
     this.email = '';
     this.password = '';
@@ -82,7 +79,6 @@ export class Login {
         },
         error: (err) => {
           this.loading.set(false);
-          // Show backend validation errors if they exist
           if (err?.error?.errors) {
             const messages = err.error.errors.map((e: any) => e.message).join(', ');
             this.error.set(messages);

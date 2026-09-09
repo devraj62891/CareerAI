@@ -1,8 +1,9 @@
 const { Resend } = require("resend");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const sendWelcomeEmail = async (name, email) => {
+  // Initialize inside function so dotenv has already loaded
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
   await resend.emails.send({
     from: "CareerAI <onboarding@resend.dev>",
     to: email,

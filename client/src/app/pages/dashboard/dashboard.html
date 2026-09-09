@@ -7,12 +7,61 @@
 </header>
 
 <main class="page">
+
+  <!-- STEP INDICATORS -->
+  <div class="steps">
+    <div class="step" [class.active]="true" [class.done]="!!resumeId()">
+      <div class="step-num">{{ resumeId() ? '✓' : '1' }}</div>
+      <span>Upload Resume</span>
+    </div>
+    <div class="step-line" [class.done]="!!resumeId()"></div>
+    <div class="step" [class.active]="!!resumeId()" [class.done]="!!analysis()">
+      <div class="step-num">{{ analysis() ? '✓' : '2' }}</div>
+      <span>Target Company</span>
+    </div>
+    <div class="step-line" [class.done]="!!analysis()"></div>
+    <div class="step" [class.active]="!!analysis()">
+      <div class="step-num">3</div>
+      <span>Get Results</span>
+    </div>
+  </div>
+
   <!-- STEP 1: Upload resume -->
   <section class="card">
-    <h2>1. Upload your resume (PDF)</h2>
-    <input type="file" accept="application/pdf" (change)="onFileSelected($event)" />
-    <button (click)="uploadResume()" [disabled]="uploading()">
-      {{ uploading() ? 'Uploading…' : 'Upload' }}
+    <h2>
+      <span class="step-badge">1</span>
+      Upload your resume
+    </h2>
+    <p class="card-subtitle">PDF format only, max 5MB</p>
+
+    <label class="upload-area" [class.has-file]="!!selectedFile">
+      <input
+        type="file"
+        accept="application/pdf"
+        (change)="onFileSelected($event)"
+        style="display: none"
+      />
+      @if (!selectedFile) {
+        <div class="upload-placeholder">
+          <span class="upload-icon">📄</span>
+          <span class="upload-text">Click to choose a PDF file</span>
+          <span class="upload-hint">or drag and drop here</span>
+        </div>
+      } @else {
+        <div class="upload-placeholder">
+          <span class="upload-icon">✅</span>
+          <span class="upload-text">{{ selectedFile.name }}</span>
+          <span class="upload-hint">Click to change file</span>
+        </div>
+      }
+    </label>
+
+    <button
+      class="btn-primary"
+      (click)="uploadResume()"
+      [disabled]="uploading() || !selectedFile"
+    >
+      {{ uploading() ? '⏳ Uploading…' : '⬆️ Upload Resume' }}
     </button>
 
     @if (resumeId()) {
@@ -21,86 +70,195 @@
   </section>
 
   <!-- STEP 2: Enter company + analyze -->
-  <section class="card">
-      <h2>2. Which company are you targeting?</h2>
-      <input
-        type="text"
-        [(ngModel)]="targetCompany"
-        placeholder="e.g. Google, Amazon, Cognizant"
-      />
+  <section class="card" [class.card-disabled]="!resumeId()">
+    <h2>
+      <span class="step-badge">2</span>
+      Target company
+    </h2>
+    <p class="card-subtitle">We'll tailor the analysis specifically for this company</p>
 
-      <!-- NEW: Job Description (optional) -->
-      <label style="margin-top: 12px; display: block;">
-        Job Description 
-        <span style="color: gray; font-size: 12px;">(optional — paste for more targeted analysis)</span>
-      </label>
-      <textarea
-        [(ngModel)]="jobDescription"
-        placeholder="Paste the job description here for more accurate analysis..."
-        rows="5"
-        style="width: 100%; margin-top: 4px; padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); resize: vertical;"
-      ></textarea>
-    <button (click)="analyze()" [disabled]="analyzing() || !resumeId()">
-      {{ analyzing() ? 'Analyzing…' : 'Analyze Resume' }}
+    <input
+      type="text"
+      [(ngModel)]="targetCompany"
+      placeholder="e.g. Google, Amazon, Cognizant"
+      [disabled]="!resumeId()"
+    />
+
+    <label class="jd-label">
+      Job Description
+      <span class="optional-tag">optional</span>
+    </label>
+    <textarea
+      [(ngModel)]="jobDescription"
+      placeholder="Paste the job description for more accurate analysis..."
+      rows="4"
+      [disabled]="!resumeId()"
+    ></textarea>
+
+    <button
+      class="btn-primary"
+      (click)="analyze()"
+      [disabled]="analyzing() || !resumeId() || !targetCompany.trim()"
+    >
+      @if (analyzing()) {
+        <span class="analyzing-text">
+          <span class="spinner"></span>
+          {{ analyzingStep() }}
+        </span>
+      } @else {
+        🤖 Analyze Resume
+      }
     </button>
   </section>
 
-  <!-- Any error shows here -->
+  <!-- Error -->
   @if (error()) {
-    <p class="error">{{ error() }}</p>
+    <p class="error">⚠️ {{ error() }}</p>
   }
 
   <!-- STEP 3: Results -->
   @if (analysis(); as a) {
     <section class="card results">
-      <h2>Results</h2>
 
-      <!-- ATS score -->
-      <div class="score-row">
-        <div class="score">{{ a.atsScore }}<span>/100</span></div>
-        <p class="score-feedback">{{ a.atsFeedback }}</p>
+      <!-- Header -->
+      <div class="results-header">
+        <h2>Analysis Results</h2>
+        <span class="company-badge">{{ targetCompany }}</span>
       </div>
 
-      <!-- Strengths -->
-      <h3>💪 Strengths</h3>
-      <ul>
-        @for (s of a.strengths; track s) {
-          <li>{{ s }}</li>
-        }
-      </ul>
+      <!-- Candidate Profile (from Agent 1) -->
+      @if (a.candidate) {
+        <div class="candidate-card">
+          <div class="candidate-avatar">
+           {{ a.candidate.fullName.charAt(0) || '?' }}
+          </div>
+          <div class="candidate-info">
+            <h3>{{ a.candidate.fullName }}</h3>
+            <p>{{ a.candidate.currentRole }} · {{ a.candidate.totalExperience }}</p>
+            <div class="skills-row">
+              @for (skill of a.candidate.skills.slice(0, 6); track skill) {
+                <span class="skill-chip">{{ skill }}</span>
+              }
+            </div>
+          </div>
+          <div class="readiness-badge" [class]="getReadinessClass(a.overallReadiness || '')">
+            {{ a.overallReadiness || 'Assessed' }}
+          </div>
+        </div>
+      }
+
+      <!-- ATS Score -->
+      <div class="score-section">
+        <div class="score-circle" [class]="getScoreClass(a.atsScore)">
+          <svg viewBox="0 0 36 36" class="circular-chart">
+            <path class="circle-bg"
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+            <path class="circle"
+              [style.strokeDasharray]="a.atsScore + ', 100'"
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+            <text x="18" y="20.35" class="percentage">{{ a.atsScore }}</text>
+          </svg>
+        </div>
+        <div class="score-details">
+          <h3>ATS Score</h3>
+          <p class="score-feedback">{{ a.atsFeedback }}</p>
+          @if (a.formatFeedback) {
+            <p class="format-feedback">📋 {{ a.formatFeedback }}</p>
+          }
+        </div>
+      </div>
+
+      <!-- Keywords -->
+      @if (a.keywordsMatched?.length || a.keywordsMissing?.length) {
+        <div class="keywords-section">
+          @if (a.keywordsMatched?.length) {
+            <div class="keyword-group">
+              <h4>✅ Keywords Matched</h4>
+              <div class="keyword-chips">
+                @for (k of a.keywordsMatched; track k) {
+                  <span class="chip chip-green">{{ k }}</span>
+                }
+              </div>
+            </div>
+          }
+          @if (a.keywordsMissing?.length) {
+            <div class="keyword-group">
+              <h4>❌ Keywords Missing</h4>
+              <div class="keyword-chips">
+                @for (k of a.keywordsMissing; track k) {
+                  <span class="chip chip-red">{{ k }}</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Priority Actions -->
+      @if (a.priorityActions?.length) {
+        <div class="priority-section">
+          <h3>🎯 Priority Actions</h3>
+          <ul class="priority-list">
+            @for (action of a.priorityActions; track action; let i = $index) {
+              <li>
+                <span class="priority-num">{{ i + 1 }}</span>
+                {{ action }}
+              </li>
+            }
+          </ul>
+        </div>
+      }
 
       <!-- Weaknesses -->
-     <!-- Weaknesses -->
-<h3>⚠️ Areas to Improve</h3>
-<ul>
-  @for (w of a.weaknesses; track w.area) {
-    <li>
-      <strong>{{ w.area }}</strong> — {{ w.description }}
-      <br />
-      <em>How to improve:</em> {{ w.howToImprove }}
-    </li>
-  }
-</ul>
-
-
-
-      <!-- Interview questions -->
-      <h3>❓ Likely Interview Questions</h3>
-      <div class="questions">
-        @for (q of a.interviewQuestions; track q.question) {
-          <div class="question">
-            <p>{{ q.question }}</p>
-            <div class="tags">
-              <span class="tag">{{ q.category }}</span>
-              <span class="tag difficulty">{{ q.difficulty }}</span>
+      <h3>⚠️ Areas to Improve</h3>
+      <div class="weakness-cards">
+        @for (w of a.weaknesses; track w.area) {
+          <div class="weakness-card">
+            <div class="weakness-header">
+              <strong>{{ w.area }}</strong>
+            </div>
+            <p class="weakness-desc">{{ w.description }}</p>
+            <div class="improvement-tip">
+              💡 {{ w.howToImprove }}
             </div>
           </div>
         }
       </div>
 
-      <!-- Overall -->
+      <!-- Interview Questions -->
+      <h3>❓ Interview Questions</h3>
+      @if (a.interviewTips) {
+        <div class="interview-tips">
+          💬 {{ a.interviewTips }}
+        </div>
+      }
+      <div class="questions">
+        @for (q of a.interviewQuestions; track q.question; let i = $index) {
+          <div class="question">
+            <div class="question-num">Q{{ i + 1 }}</div>
+            <div class="question-body">
+              <p>{{ q.question }}</p>
+              <div class="tags">
+                <span class="tag">{{ q.category }}</span>
+                <span class="tag difficulty">{{ q.difficulty }}</span>
+                @if (q.targetArea) {
+                  <span class="tag target">🎯 {{ q.targetArea }}</span>
+                }
+              </div>
+              @if (q.whyAsked) {
+                <p class="why-asked">💡 {{ q.whyAsked }}</p>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Overall Feedback -->
       <h3>📝 Overall Feedback</h3>
       <p class="overall">{{ a.overallFeedback }}</p>
+
     </section>
   }
 </main>

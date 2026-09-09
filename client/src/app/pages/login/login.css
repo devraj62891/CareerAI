@@ -1,3 +1,4 @@
+/* ── Layout ── */
 .auth-wrap {
   position: relative;
   min-height: 100vh;
@@ -5,134 +6,113 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  background: var(--bg);
 }
 
-/* top-right theme toggle */
 .corner {
   position: absolute;
   top: 1rem;
   right: 1rem;
 }
 
+/* ── Card ── */
 .card {
   width: 100%;
-  max-width: 380px;
+  max-width: 400px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 2rem;
+  border-radius: 20px;
+  padding: 2.25rem;
   box-shadow: var(--shadow);
 }
 
 .brand {
-  margin-bottom: 0.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.title {
+  margin: 0 0 0.3rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
 }
 
 .subtitle {
-  margin: 0.25rem 0 1.5rem;
+  margin: 0 0 1.75rem;
   color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
+/* ── Form Fields ── */
 form {
   display: flex;
   flex-direction: column;
+  gap: 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
 }
 
 label {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
   color: var(--text-muted);
-  margin-bottom: 0.25rem;
-  margin-top: 0.75rem;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 input {
-  padding: 0.6rem 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
   font-size: 0.95rem;
   background: var(--surface-2);
   color: var(--text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
 }
 
 input:focus {
   outline: none;
   border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
-button {
-  margin-top: 1.25rem;
-  padding: 0.7rem;
-  border: 0;
-  border-radius: 8px;
-  background: var(--primary);
-  color: #fff;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.msg {
-  margin-top: 1rem;
-  padding: 0.6rem 0.75rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
-}
-
-.error {
-  background: var(--error-bg);
-  color: var(--error-text);
-}
-
-.info {
-  background: var(--info-bg);
-  color: var(--info-text);
-}
-
-.toggle {
-  margin-top: 1.25rem;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
-
-.toggle a {
-  color: var(--primary);
-  font-weight: 600;
-  cursor: pointer;
-}
-
-
-/* Field-level error messages */
-.field-error {
-  display: block;
-  color: #e53e3e;
-  font-size: 12px;
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-/* Red border on invalid touched inputs */
-input.ng-invalid.ng-touched {
+input.invalid {
   border-color: #e53e3e;
-  outline-color: #e53e3e;
 }
 
-/* Green border on valid inputs */
-input.ng-valid.ng-dirty {
+input.invalid:focus {
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.15);
+}
+
+input.valid {
   border-color: #38a169;
 }
 
-/* Password strength bar */
+/* ── Field Errors ── */
+.field-error {
+  display: block;
+  color: #f87171;
+  font-size: 0.78rem;
+  margin-top: 0.35rem;
+}
+
+/* ── Password Strength ── */
+.strength-wrap {
+  margin-bottom: 1rem;
+}
+
 .strength-bar {
   height: 4px;
-  background: #e2e8f0;
+  background: var(--border);
   border-radius: 2px;
-  margin: 4px 0 2px;
+  margin-bottom: 0.3rem;
   overflow: hidden;
 }
 
@@ -142,15 +122,98 @@ input.ng-valid.ng-dirty {
   transition: width 0.3s ease, background 0.3s ease;
 }
 
-.strength-fill.weak { background: #e53e3e; }
-.strength-fill.medium { background: #ed8936; }
-.strength-fill.strong { background: #38a169; }
+.strength-fill.weak   { background: #f87171; width: 33%; }
+.strength-fill.medium { background: #fcd34d; }
+.strength-fill.strong { background: #4ade80; }
 
 .strength-label {
-  font-size: 11px;
-  margin-bottom: 8px;
-  display: block;
+  font-size: 0.78rem;
+  font-weight: 500;
 }
 
-.strength-fill.weak + .strength-label,
-.strength-label:has(+ .weak) { color: #e53e3e; }
+.strength-label.weak   { color: #f87171; }
+.strength-label.medium { color: #fcd34d; }
+.strength-label.strong { color: #4ade80; }
+
+/* ── Submit Button ── */
+.submit-btn {
+  margin-top: 0.5rem;
+  padding: 0.8rem;
+  border: 0;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: opacity 0.2s, transform 0.1s;
+  font-family: inherit;
+}
+
+.submit-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Button Spinner ── */
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Messages ── */
+.msg {
+  margin-top: 1rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.msg.error {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.msg.info {
+  background: var(--info-bg);
+  color: var(--info-text);
+}
+
+/* ── Toggle ── */
+.toggle {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.toggle a {
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.toggle a:hover {
+  text-decoration: underline;
+}
