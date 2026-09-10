@@ -137,4 +137,12 @@ export class ApiService {
       this.authHeaders(),
     );
   }
+
+  // Get all resumes for the logged-in user
+    getResumes() {
+      return this.http.get<{ resumes: { _id: string; fileName: string; createdAt: string }[] }>(
+        `${API}/resume`,
+        this.authHeaders(),
+      );
+    }
 }

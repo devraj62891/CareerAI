@@ -39,4 +39,18 @@ const uploadResume = async (req, res) => {
   }
 };
 
-module.exports = { uploadResume };
+
+// GET ALL RESUMES - fetch all resumes for the logged-in user
+const getUserResumes = async (req, res) => {
+  try {
+    const resumes = await Resume.find({ user: req.user.id })
+      .select("_id fileName createdAt")  // only send what frontend needs
+      .sort({ createdAt: -1 });           // newest first-- -1 means decending order
+
+    res.status(200).json({ resumes });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+module.exports = { uploadResume, getUserResumes };

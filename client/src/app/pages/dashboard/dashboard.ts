@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService, Analysis } from '../../services/api';
@@ -11,22 +11,64 @@ import { ThemeToggle } from '../../components/theme-toggle';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class Dashboard {
+export class Dashboard implements OnInit {
   private api = inject(ApiService);
   private router = inject(Router);
 
+  // Step 1 — upload
   selectedFile: File | null = null;
   resumeId = signal('');
   fileName = signal('');
   uploading = signal(false);
 
+  // Resume history
+  resumes = signal<{ _id: string; fileName: string; createdAt: string }[]>([]);
+  loadingResumes = signal(false);
+
+  // Step 2 — analyze
   targetCompany = '';
   jobDescription = '';
   analyzing = signal(false);
   analyzingStep = signal('Analyzing…');
 
+  // Step 3 — results
   analysis = signal<Analysis | null>(null);
   error = signal('');
+
+  // Load resume history on component init
+  ngOnInit(): void {
+    this.loadResumes();
+  }
+
+  loadResumes(): void {
+    this.loadingResumes.set(true);
+    this.api.getResumes().subscribe({
+      next: (res) => {
+        this.loadingResumes.set(false);
+        this.resumes.set(res.resumes);
+      },
+      error: () => {
+        this.loadingResumes.set(false);
+      },
+    });
+  }
+
+  // Select a resume from history — skips upload step
+  selectResume(resume: { _id: string; fileName: string; createdAt: string }): void {
+    this.resumeId.set(resume._id);
+    this.fileName.set(resume.fileName);
+    this.analysis.set(null);
+    this.error.set('');
+  }
+
+  // Format date nicely
+  formatDate(dateStr: string): string {
+    return new Date(dateStr).toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+  }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -46,6 +88,7 @@ export class Dashboard {
         this.uploading.set(false);
         this.resumeId.set(res.resume.id);
         this.fileName.set(res.resume.fileName);
+        this.loadResumes(); // refresh history after upload
       },
       error: (err) => {
         this.uploading.set(false);
@@ -56,7 +99,7 @@ export class Dashboard {
 
   analyze(): void {
     if (!this.resumeId()) {
-      this.error.set('Please upload a resume first.');
+      this.error.set('Please upload or select a resume first.');
       return;
     }
     if (!this.targetCompany.trim()) {
@@ -67,7 +110,6 @@ export class Dashboard {
     this.analyzing.set(true);
     this.analysis.set(null);
 
-    // Simulate agent progress messages
     const steps = [
       '📄 Parsing resume…',
       '📊 Scoring ATS…',
